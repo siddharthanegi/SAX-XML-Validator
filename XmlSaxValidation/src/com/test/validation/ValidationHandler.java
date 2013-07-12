@@ -1,6 +1,9 @@
 package com.test.validation;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Stack;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -8,10 +11,18 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class ValidationHandler extends DefaultHandler {
 
+	private ShipOrderDTO shipOrder;
+	
+	private ShipTo shipTo;
+	private int qty;
 	private String elementValue;
+	private Stack<String> nodes;
 	private boolean valid;
 	private Hashtable<String,String> mandatoryElements; 
 	
+	public ShipOrderDTO getShipOrder() {
+		return shipOrder;
+	}
 	public Hashtable<String, String> getMandatoryElements() {
 		return mandatoryElements;
 	}
@@ -19,12 +30,20 @@ public class ValidationHandler extends DefaultHandler {
 	ValidationHandler(){
 		valid=true;
 		mandatoryElements=new Hashtable<String,String>();
+		nodes=new Stack<String>();
+		shipTo=new ShipTo();
+		shipOrder=new ShipOrderDTO();
+		
 	}
 	
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) throws SAXException {
 
 		elementValue="";
+		nodes.push(qName);
+//		if(qName.equals("shiporder")){
+//			shipOrder=new ShipOrderDTO();
+//		}
 //		if(localName.equals("orderperson")){
 //			
 //		}
@@ -32,28 +51,39 @@ public class ValidationHandler extends DefaultHandler {
 	public void endElement (String uri, String localName, String qName)
 			throws SAXException
 		    {
-				if(qName.equals("title")){
+		
+				if(qName.equals("orderperson")){
+					shipOrder.setOrderPerson(elementValue);
 					
-					mandatoryElements.put(qName,elementValue);
-					if( elementValue.isEmpty()){
-					
-					System.out.println("Invalid");
-					elementValue="";
-					setValid(false);
-				}}
-				if (qName.equals("quantity")){
-					mandatoryElements.put(qName,elementValue);
-					if(!elementValue.matches("[0-9]+")){
-						System.out.println("Invalid");
-						elementValue="";
-						setValid(false);
-					}
-					
-				//	System.out.println(elementValue);
 				}
+				if(qName.equals("address")){
+					shipTo.setAddress(elementValue);
+				
+				}
+						
+				
+				if(qName.equals("quantity")){
+					qty=(Integer.parseInt(elementValue));
+					//System.out.println(item.getQuantity());
+				
+				}
+				if(qName.equals("item"))
+				{
+				//	System.out.println(item.getQuantity());
+					shipOrder.getItems().add(new Item(qty));
+				}
+				
+				System.out.println("Popping: "+nodes.pop());
+				//	System.out.println(elementValue);
+				
 		
 		
 		    }
+	public void endDocument()
+	{
+		shipOrder.setShipto(shipTo);
+		
+	}
 	public void characters (char ch[], int start, int length)
 			throws SAXException
 		    {
