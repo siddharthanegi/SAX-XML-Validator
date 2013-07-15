@@ -24,6 +24,7 @@ public class ValidatorMain {
 			ValidationHandler check=(ValidationHandler) xmlReader.getContentHandler();
 			//Hashtable<String, String> mandatoryElements=check.getMandatoryElements();
 			//System.out.println(mandatoryElements.toString());
+			System.out.println(check.isValid());
 			ShipOrderDTO sod=check.getShipOrder();
 			System.out.println(sod.getOrderPerson()+" "+sod.getShipto().getAddress());
 			Iterator<Item> it=sod.getItems().iterator();

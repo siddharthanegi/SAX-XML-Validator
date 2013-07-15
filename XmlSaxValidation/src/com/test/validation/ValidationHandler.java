@@ -1,8 +1,6 @@
 package com.test.validation;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Stack;
 
 import org.xml.sax.Attributes;
@@ -54,16 +52,36 @@ public class ValidationHandler extends DefaultHandler {
 		
 				if(qName.equals("orderperson")){
 					shipOrder.setOrderPerson(elementValue);
+					String temp=elementValue.replace(" ", "");
+					if(!temp.matches("[a-zA-Z]+")){
+						setValid(false);
+						System.out.println("Invalid");
+					}
+						
+					
 					
 				}
 				if(qName.equals("address")){
 					shipTo.setAddress(elementValue);
-				
+					String temp=elementValue.replace(" ", "");
+					if(!temp.matches("[0-9a-zA-Z]+")){
+						setValid(false);
+						System.out.println("invalid");
+					}
+					
 				}
 						
 				
 				if(qName.equals("quantity")){
-					qty=(Integer.parseInt(elementValue));
+					
+					String temp=elementValue;
+					if(!temp.matches("[0-9]+")){
+						setValid(false);
+						System.out.println("Invalid");
+					}
+					else{
+						qty=(Integer.parseInt(elementValue));
+					}
 					//System.out.println(item.getQuantity());
 				
 				}
@@ -71,10 +89,10 @@ public class ValidationHandler extends DefaultHandler {
 				{
 				//	System.out.println(item.getQuantity());
 					shipOrder.getItems().add(new Item(qty));
+					
 				}
 				
-				System.out.println("Popping: "+nodes.pop());
-				//	System.out.println(elementValue);
+				//System.out.println("Popping: "+nodes.pop());
 				
 		
 		
